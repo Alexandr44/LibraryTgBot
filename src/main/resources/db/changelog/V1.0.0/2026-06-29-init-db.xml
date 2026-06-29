@@ -14,12 +14,12 @@
             (
                 id               INTEGER PRIMARY KEY AUTOINCREMENT,
                 telegram_user_id INTEGER NOT NULL UNIQUE,
-                username         TEXT,
-                first_name       TEXT,
+                username         TEXT    NOT NULL,
+                first_name       TEXT    NOT NULL,
                 last_name        TEXT,
                 role             TEXT    NOT NULL,
-                created_at       INTEGER NOT NULL,
-                last_seen_at     INTEGER NOT NULL
+                created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updatedAt        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
 
             CREATE INDEX idx_users_telegram_user_id
@@ -31,9 +31,9 @@
             CREATE TABLE admin_sessions
             (
                 user_id     INTEGER PRIMARY KEY,
-                state       TEXT    NOT NULL,
-                buffer_json TEXT    NOT NULL,
-                updated_at  INTEGER NOT NULL,
+                state       TEXT NOT NULL,
+                buffer_json TEXT NOT NULL,
+                updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
                 CONSTRAINT fk_admin_sessions FOREIGN KEY (user_id)
                     REFERENCES users (id)
