@@ -3,17 +3,17 @@ server:
 
 spring:
   application:
-    name: HeadHunterMonitorBot
+    name: LibraryTgBot
   config:
     import: "optional:file:/configs/application-prod.yml"
 
   datasource:
     driver-class-name: org.sqlite.JDBC
-    url: jdbc:sqlite:data/hh_monitor_data.db
+    url: jdbc:sqlite:data/library_tg_bot_data.db
     username: ""
     password: ""
     hikari:
-      schema: feature_toggle
+      schema: library_bot
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master-local.xml
@@ -25,13 +25,7 @@ scheduler:
 
 telegrambot:
   bot:
-    username: HeadHunterMonitorBot
-    token: "8325944541:AAE0MZjGBVlpYo-ATWwtzO6zVYYl8G6qksQ" #prod
-#    token: "6435196077:AAH9ky7D0A6zgCD4qedCddaHFH_uZ9TEaLY" #dev
-    support_chat_id: "-5039932829"  #prod
-#    support_chat_id: "-4918264185" #dev
+    username: LibraryTgBot
+    token: "6435196077:AAH9ky7D0A6zgCD4qedCddaHFH_uZ9TEaLY" #dev
+    support_chat_id: "-4918264185" #dev
 
-hh:
-  redirect_url: https://hh.ru
-  grant_type_access: authorization_code
-  grant_type_refresh: refresh_token
