@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="2026-06-29-init-db" author="alexandr.glukhov">
+        <sql>
+
+            ------------------------------------------------------------
+            -- USERS
+            ------------------------------------------------------------
+            CREATE TABLE users
+            (
+                id               INTEGER PRIMARY KEY AUTOINCREMENT,
+                telegram_user_id INTEGER NOT NULL UNIQUE,
+                username         TEXT,
+                first_name       TEXT,
+                last_name        TEXT,
+                role             TEXT    NOT NULL,
+                created_at       INTEGER NOT NULL,
+                last_seen_at     INTEGER NOT NULL
+            );
+
+            CREATE INDEX idx_users_telegram_user_id
+                ON users (telegram_user_id);
+
+            ------------------------------------------------------------
+            -- ADMIN SESSIONS
+            ------------------------------------------------------------
+            CREATE TABLE admin_sessions
+            (
+                user_id     INTEGER PRIMARY KEY,
+                state       TEXT    NOT NULL,
+                buffer_json TEXT    NOT NULL,
+                updated_at  INTEGER NOT NULL,
+
+                CONSTRAINT fk_admin_sessions FOREIGN KEY (user_id)
+                    REFERENCES users (id)
+                    ON DELETE RESTRICT
+            );
+
+            ------------------------------------------------------------
+            -- CATEGORIES
+            ------------------------------------------------------------
+            CREATE TABLE categories
+            (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                parent_id  INTEGER,
+                title      TEXT    NOT NULL,
+                sort_order INTEGER NOT NULL,
+
+                CONSTRAINT fk_categories_parent
+                    FOREIGN KEY (parent_id)
+                        REFERENCES categories (id)
+                        ON DELETE RESTRICT
+            );
+
+            CREATE INDEX idx_categories_parent
+                ON categories (parent_id);
+
+            CREATE INDEX idx_categories_parent_sort
+                ON categories (parent_id, sort_order);
+
+            ------------------------------------------------------------
+            -- EXERCISES
+            ------------------------------------------------------------
+            CREATE TABLE exercises
+            (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                category_id INTEGER NOT NULL,
+                title       TEXT    NOT NULL,
+                sort_order  INTEGER NOT NULL,
+
+                CONSTRAINT fk_exercises_category
+                    FOREIGN KEY (category_id)
+                        REFERENCES categories (id)
+                        ON DELETE CASCADE
+            );
+
+            CREATE INDEX idx_exercises_category
+                ON exercises (category_id);
+
+            CREATE INDEX idx_exercises_category_sort
+                ON exercises (category_id, sort_order);
+
+            ------------------------------------------------------------
+            -- STEPS
+            ------------------------------------------------------------
+            CREATE TABLE steps
+            (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                exercise_id INTEGER NOT NULL,
+                sort_order  INTEGER NOT NULL,
+                type        TEXT    NOT NULL,
+                payload     TEXT    NOT NULL,
+
+                CONSTRAINT fk_steps_exercise
+                    FOREIGN KEY (exercise_id)
+                        REFERENCES exercises (id)
+                        ON DELETE CASCADE
+            );
+
+            CREATE INDEX idx_steps_exercise
+                ON steps (exercise_id);
+
+            CREATE INDEX idx_steps_exercise_sort
+                ON steps (exercise_id, sort_order);
+
+
+        </sql>
+    </changeSet>
+</databaseChangeLog>
