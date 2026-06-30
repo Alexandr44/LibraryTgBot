@@ -23,7 +23,7 @@ scheduler:
   refresh-cron: "0 0 0 */2 * *"
 #  cron: "*/15 * * * * *"
 
-telegrambot:
+telegram:
   bot:
     username: LibraryTgBot
     token: "6435196077:AAH9ky7D0A6zgCD4qedCddaHFH_uZ9TEaLY" #dev
